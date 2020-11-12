@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "DIAN Data Fields Thomas",
+    'name': "DIAN Data Fields",
 
     'summary': """
         Este módulo contiene la información identificada por la DIAN para la localización Colombiana""",
@@ -22,7 +22,7 @@
     'website': "https://www.todoo.co/",
     'category': 'Localization',
     'version': '0.1',
-    'depends': ['account', 'base_setup', 'base_vat', 'product', 'base_address_city', 'contacts', 'sale'],
+    'depends': ['account', 'base_setup', 'base_vat', 'product', 'base_address_city', 'contacts'],
     "post_init_hook": "post_init_hook",
     'data': [
         "security/l10n_co_account_fiscal_position_party_tax_scheme/ir.model.access.csv",
@@ -30,8 +30,7 @@
 		"data/l10n_co_account_fiscal_position_party_tax_scheme/account_fiscal_position_tax_scheme_data.xml",
 		"views/l10n_co_account_fiscal_position_party_tax_scheme/account_fiscal_position_tax_level_code_views.xml",
 		"views/l10n_co_account_fiscal_position_party_tax_scheme/account_fiscal_position_tax_scheme_views.xml",
-		# "views/l10n_co_account_fiscal_position_party_tax_scheme/account_fiscal_position_views.xml",
-        "views/l10n_co_account_fiscal_position_party_tax_scheme/res_partner_views.xml",
+		"views/l10n_co_account_fiscal_position_party_tax_scheme/account_fiscal_position_views.xml",
 
         "security/l10n_co_account_invoice_discrepancy_response/ir.model.access.csv",
 		"data/l10n_co_account_invoice_discrepancy_response/account_invoice_discrepancy_response_code_data.xml",
@@ -54,13 +53,12 @@
 
         "security/l10n_co_base_location/ir.model.access.csv",
         "data/l10n_co_base_location/res_country_data.xml",
-        "data/l10n_co_base_location/res.country.state.csv",
-        "data/l10n_co_base_location/res.city.csv",
-        "data/l10n_co_base_location/res.city.zip.csv",
-        # "data/l10n_co_base_location/res_country_state_data.xml",
+        "data/l10n_co_base_location/res_country_state_data.xml",
         # "data/l10n_co_base_location/res.city.csv",
-        # "data/l10n_co_base_location/res_city_data.xml",
-        # "data/l10n_co_base_location/res_city_zip_data.xml",,
+        "data/l10n_co_base_location/res_city_data.xml",
+        "data/l10n_co_base_location/res_city_zip_data.xml",
+        # "data/l10n_co_base_location/res.city.zip.csv",
+        #"data/l10n_co_base_location/res_better_zip_data.xml",
         "views/l10n_co_base_location/res_city_zip_view.xml",
         "views/l10n_co_base_location/res_city_view.xml",
         "views/l10n_co_base_location/res_country_view.xml",
@@ -81,25 +79,17 @@
 
         "views/partner_commercial_name/res_partner_views.xml",
 
-        # "views/l10n_co_account_fiscal_position_listname/account_fiscal_position_views.xml",
-        "views/l10n_co_account_fiscal_position_listname/res_partner_views.xml",
+        "views/l10n_co_account_fiscal_position_listname/account_fiscal_position_views.xml",
 
-        "security/l10n_co_product_uom/ir.model.access.csv",
+        #"security/l10n_co_product_uom/ir.model.access.csv",
 		"data/l10n_co_product_uom/product.uom.code.csv",
 		"views/l10n_co_product_uom/product_uom_views.xml",
 
-        # "security/partner_address_ciiu/ir.model.access.csv",
-        # "data/partner_address_ciiu/address_code_data.xml",
-        # "views/partner_address_ciiu/address_code_views.xml",
-        # "views/partner_address_ciiu/ciiu_value_views.xml",
-        # "views/partner_address_ciiu/street_code_views.xml",
-        # "views/partner_address_ciiu/res_partner_views.xml",
-
-        "security/company_consortium/ir.model.access.csv",
-        "views/company_consortium/res_company_views.xml",
-
-        "views/account_move_views.xml",
-        "views/sale_order_views.xml",
-        "wizards/sale_advance_payment_inv_views.xml",
+        "security/partner_address_ciiu/ir.model.access.csv",
+        "data/partner_address_ciiu/address_code_data.xml",
+        "views/partner_address_ciiu/address_code_views.xml",
+        "views/partner_address_ciiu/ciiu_value_views.xml",
+        "views/partner_address_ciiu/street_code_views.xml",
+        "views/partner_address_ciiu/res_partner_views.xml",
     ],
 }

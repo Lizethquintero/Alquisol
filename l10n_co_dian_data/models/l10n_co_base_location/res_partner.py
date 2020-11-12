@@ -4,8 +4,6 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-import logging
-_logger = logging.getLogger(__name__)
 
 
 class ResPartner(models.Model):
@@ -13,32 +11,6 @@ class ResPartner(models.Model):
 
     zip_id = fields.Many2one("res.city.zip", "ZIP Location")
     country_code = fields.Char(related='country_id.code', store=False)
-
-    def update_all_location(self):
-        partner_ids = self.search([]).filtered(lambda x: x.city_crm and not x.city_id)
-        for partner in partner_ids:
-            partner.update_self_location()
-
-    def update_self_location(self):
-        self.ensure_one()
-        if self.city_crm:
-            city_id = self.city_crm
-            zip_id = self.env['res.city.zip'].search([('city_id','=',city_id.id)], limit=1)
-            if zip_id and self.state_id and zip_id.city_id.state_id.id != self.state_id.id:
-                city_id = self.env['res.city'].search([('name','=',city_id.name),('state_id','=',self.state_id.id)], limit=1)
-                if city_id:
-                    zip_id = self.env['res.city.zip'].search([('city_id','=',city_id.id)], limit=1)
-                else:
-                    zip_id = False
-            if zip_id:
-                self.zip_id = zip_id.id
-                self._onchange_zip_id()
-                _logger.info('ZIP - ' + str(self.city_id.name))
-            else:
-                self.city_id = city_id.id
-                self.state_id = city_id.state_id.id or False
-                self.country_id = city_id.country_id.id or False
-                _logger.info('City - ' + str(self.city_id.name))
 
     @api.onchange("city_id")
     def _onchange_city_id(self):
@@ -80,12 +52,12 @@ class ResPartner(models.Model):
         for rec in self:
             if not rec.zip_id:
                 continue
-            if rec.state_id and rec.zip_id.city_id.state_id != rec.state_id:
+            if rec.zip_id.city_id.state_id != rec.state_id:
                 raise ValidationError(
                     _("The state of the partner %s differs from that in " "location %s")
                     % (rec.name, rec.zip_id.name)
                 )
-            if rec.country_id and rec.zip_id.city_id.country_id != rec.country_id:
+            if rec.zip_id.city_id.country_id != rec.country_id:
                 raise ValidationError(
                     _(
                         "The country of the partner %s differs from that in "
@@ -93,7 +65,7 @@ class ResPartner(models.Model):
                     )
                     % (rec.name, rec.zip_id.name)
                 )
-            if rec.city_id and rec.type != 'contact' and rec.zip_id.city_id != rec.city_id:
+            if rec.type != 'contact' and rec.zip_id.city_id != rec.city_id:
                 raise ValidationError(
                     _("The city of partner %s differs from that in " "location %s")
                     % (rec.name, rec.zip_id.name)
@@ -107,7 +79,3 @@ class ResPartner(models.Model):
         if self.zip_id and self.state_id != self.zip_id.city_id.state_id:
             vals.update({"zip_id": False, "zip": False, "city": False})
         self.update(vals)
-        if self.state_id and not self.zip_id:
-            cities_ids = self.env['res.city'].search([('state_id','=',self.state_id.id)]).ids
-            return {'domain': {'zip_id': [('city_id', 'in', cities_ids)],
-                               'city_id': [('id', 'in', cities_ids)]}}

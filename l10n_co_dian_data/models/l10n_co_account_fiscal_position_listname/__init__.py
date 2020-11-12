@@ -3,5 +3,4 @@
 # Copyright 2019 Joan Marín <Github@JoanMarin>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-# from . import account_fiscal_position
-from . import res_partner
+from . import account_fiscal_position

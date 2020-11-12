@@ -5,5 +5,4 @@
 
 from . import account_fiscal_position_tax_level_code
 from . import account_fiscal_position_tax_scheme
-# from . import account_fiscal_position
-from . import res_partner
+from . import account_fiscal_position

@@ -9,7 +9,7 @@
                 <attribute name="editable"/>
             </tree>
             <field name="zipcode" position="attributes">
-                <attribute name="invisible">0</attribute>
+                <attribute name="invisible">1</attribute>
             </field>
             <field name="zipcode" position="after">
                 <field name="zip_ids" widget="many2many_tags"/>
@@ -28,9 +28,7 @@
                             <field name="country_id"/>
                             <field name="state_id"/>
                         </group>
-                        <group>
-                            <field name="zipcode"/>
-                        </group>        
+                        <group></group>        
                     </group>
                     <notebook>
                         <page name="zips" string="Zips">

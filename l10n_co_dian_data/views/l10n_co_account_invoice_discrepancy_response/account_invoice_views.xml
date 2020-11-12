@@ -6,25 +6,17 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@id='header_right_group']/div[@class='o_td_label']" position="before">
-                    <field name="refund_type" 
-                            attrs="{'required': [('type', '=', 'out_refund')], 
-                                    'invisible': [('refund_type', '=', False)]}"
-                            readonly="1"/>
+                    <field name="refund_type" attrs="{'required': [('type', '=', 'out_refund')], 'invisible': [('type', '!=', 'out_refund')], 'readonly': [('state','!=','draft')]}"/>
                 </xpath>
                 <xpath expr="//field[@name='journal_id']" position="before">
-                    <field name="discrepancy_response_code_id" 
-                            domain="[('type', '=', refund_type)]" 
-                            attrs="{'required': [('refund_type', '!=', False)], 
-                                    'invisible': [('refund_type', '=', False)]}" 
-                            options="{'no_create_edit': True}"/>
+                    <field name="discrepancy_response_code_id" domain="[('type', 'in', ('debit','credit'))]" attrs="{'required': [('type', '=', 'out_refund')], 'invisible': [('type', '!=', 'out_refund')]}" options="{'no_create_edit': True}"/>
                 </xpath>
                 <xpath expr="//button[@id='account_invoice_payment_btn']" position="after">
                     <button name="%(account_invoice_debit_note_action)d"
                             type='action'
                             string='Debit Note Invoice'
                             attrs="{'invisible': ['|',
-                                                ('type', '!=', 'out_invoice'),
-                                                ('refund_type', '!=', False),
+                                                ('type', '=', 'debit'),
                                                 ('state', 'in', ['proforma2', 'proforma', 'cancel', 'draft'])]}"
                             icon='fa-file'/>
                 </xpath>
@@ -55,39 +47,6 @@
                 </xpath>
             </field>
         </record>
-
-        <!-- Update Action Sale Invoice -->
-        <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
-            <field name="domain" eval="[('type', '=', 'out_invoice'),('refund_type','=',False)]"/>
-            <field name="context" eval="{'default_type': 'out_invoice', 'default_refund_type': False}"/>
-        </record>
-
-        <!-- Update Action Sale Invoice -->
-        <record id="account.action_move_out_refund_type" model="ir.actions.act_window">
-            <field name="domain" eval="[('type', '=', 'out_refund'),('refund_type','=','credit')]"/>
-            <field name="context" eval="{'default_type': 'out_refund', 'default_refund_type': 'credit'}"/>
-        </record>
-
-        <!-- Action Debit Note -->
-        <record id="action_move_debit_note_type" model="ir.actions.act_window">
-            <field name="name">Debit Note</field>
-            <field name="res_model">account.move</field>
-            <field name="view_mode">tree,kanban,form</field>
-            <field name="view_id" ref="account.view_invoice_tree"/>
-            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
-            <field name="domain">[('type', '=', 'out_invoice'),('refund_type','=','debit')]</field>
-            <field name="context">{'default_type': 'out_invoice', 'default_refund_type': 'debit'}</field>
-            <field name="help" type="html">
-              <p class="o_view_nocontent_smiling_face">
-                Create a customer debit note
-              </p><p>
-                Create debit notes, register payments and keep track of the discussions with your customers.
-              </p>
-            </field>
-        </record>
-
-        <!-- This Menu Item must have a parent and an action -->
-        <menuitem id="menu_act_out_debit_note" name="Debit Notes" parent="account.menu_finance_receivables" action="action_move_debit_note_type" sequence="1"/>
     </data>
 </odoo>
 

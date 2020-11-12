@@ -9,29 +9,6 @@ import re
 import logging
 _logger = logging.getLogger(__name__)
 
-doc_type = {
-    '31': 'rut',
-    '12': 'id_card',
-    '41': 'passport',
-    '22': 'foreign_id_card',
-    '42': 'external_id',
-    # '': 'diplomatic_card',
-    # '': 'residence_document',
-    '11': 'civil_registration',
-    '13': 'national_citizen_id',
-}
-
-doc_type_inverse = {
-    'rut': '31',
-    'id_card': '12',
-    'passport': '41',
-    'foreign_id_card': '22',
-    'external_id': '42',
-    # '': 'diplomatic_card',
-    # '': 'residence_document',
-    'civil_registration': '11',
-    'national_citizen_id': '13',
-}
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -44,21 +21,6 @@ class ResPartner(models.Model):
             store=False)
     check_digit = fields.Char(string='Verification Digit', size=1)
     identification_document = fields.Char('Identification Document')
-
-    def update_all_document(self):
-        for partner in self.search([]).filtered(lambda x: x.vat and not x.identification_document):
-            partner.update_self_document()
-
-    def update_self_document(self):
-        self.ensure_one()
-        if not self.document_type_id and self.l10n_co_document_type:
-            doc_id = self.env['res.partner.document.type'].search([('code', '=' , doc_type_inverse.get(self.l10n_co_document_type, 'asdf'))], limit=1)
-            self.document_type_id = doc_id.id or False
-        if not self.identification_document and self.vat:
-            self.identification_document = self.vat
-
-        if self.document_type_id or self.identification_document:
-            self._compute_concat_nit()
 
     @api.onchange('identification_document')
     def _compute_concat_nit(self):
@@ -74,7 +36,7 @@ class ResPartner(models.Model):
             _logger.info(partner.document_type_id.code)
             if partner.document_type_id.code == '31':
                 # First check if entered value is valid
-                # _logger.info('if')
+                _logger.info('if')
                 self._check_ident()
                 self._check_ident_num()
 
@@ -82,7 +44,7 @@ class ResPartner(models.Model):
                 if partner.identification_document == False:
                     partner.identification_document = ''
                 else:
-                    # _logger.info('else')
+                    _logger.info('else')
                     partner.check_digit = ''
 
                     # Formatting the NIT: xx.xxx.xxx-x
@@ -106,8 +68,8 @@ class ResPartner(models.Model):
 
                     # Saving Verification digit in a proper field
                     for pnitem in self:
-                        # _logger.info(nitList[1])
-                        # _logger.info('nitlist')
+                        _logger.info(nitList[1])
+                        _logger.info('nitlist')
                         pnitem.check_digit = nitList[1]
 
     def _check_dv(self, nit):
@@ -146,7 +108,7 @@ class ResPartner(models.Model):
         for item in self:
             if item.document_type_id.code != 1:
                 msg = _('Error! Number of digits in Identification number must be'
-                        'between 2 and 12 \n\n %s [%s]') % (item.name, item.id)
+                        'between 2 and 12')
                 if len(str(item.identification_document)) < 2:
                     raise exceptions.ValidationError(msg)
                 elif len(str(item.identification_document)) > 12:
@@ -168,7 +130,7 @@ class ResPartner(models.Model):
                                 item.document_type_id.code != 41:
                     if re.match("^[0-9]+$", item.identification_document) is None:
                         msg = _('Error! Identification number can only '
-                                'have numbers \n\n %s [%s]') % (item.name, item.id)
+                                'have numbers')
                         raise exceptions.ValidationError(msg)
 
 
@@ -186,13 +148,10 @@ class ResPartner(models.Model):
                     self.check_digit = False
                     self.vat = self.country_id.code + self.identification_document
             else:
-                msg = _('The Country has No ISO Code. \n\n %s [%s]') % (self.name, self.id)
+                msg = _('The Country has No ISO Code.')
                 raise ValidationError(msg)
         elif not self.identification_document and self.vat:
             self.vat = False
-        
-        if self.document_type_id:
-            self.l10n_co_document_type = doc_type.get(self.document_type_id.code, False)
 
     @api.constrains('vat', 'document_type_id', 'country_id')
     def check_vat(self):
