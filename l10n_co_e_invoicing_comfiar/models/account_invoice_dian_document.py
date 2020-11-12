@@ -124,10 +124,6 @@ class AccountInvoiceDianDocument(models.Model):
     pdf_filename = fields.Char(string='Pdf Filename')
     attach_pdf = fields.Boolean(string='Adjuntar pdf en Comfiar', default=False)
     attach_pdf_response = fields.Text(string='Respuesta Adjuntar Pdf')
-    date_validation_dian = fields.Char(string="Date of validation DIAN")
-    attached_docs = fields.Char(string='Uploaded attachments', default=False)
-    
-    
 
     def unlink(self):
         for record in self:
@@ -389,13 +385,13 @@ class AccountInvoiceDianDocument(models.Model):
         _logger.info('impresion')
         _logger.info(self.invoice_id.refund_type)
 
-        if self.invoice_id.type == 'out_invoice' and not self.invoice_id.refund_type:
+        if self.invoice_id.type == 'out_invoice':
             xml_filename_prefix = 'fv'
             dddddddd = str(out_invoice_sent + 1).zfill(8)
         elif self.invoice_id.type == 'out_refund' and self.invoice_id.refund_type != 'debit':
             xml_filename_prefix = 'nc'
             dddddddd = str(out_refund_sent + 1).zfill(8)
-        elif self.invoice_id.type == 'out_invoice' and self.invoice_id.refund_type == 'debit':
+        elif self.invoice_id.type == 'out_refund' and self.invoice_id.refund_type == 'debit':
             xml_filename_prefix = 'nd'
             dddddddd = str(out_refund_sent + 1).zfill(8)
 
@@ -438,8 +434,8 @@ class AccountInvoiceDianDocument(models.Model):
             timezone('America/Bogota')).strftime('%H:%M:%S-05:00')
         self.invoice_id.issue_time = IssueTime
         ActualDeliveryDate = datetime.now().date()
-        LossRiskResponsibilityCode = self.invoice_id.invoice_incoterm_id.code or ''
-        LossRisk = self.invoice_id.invoice_incoterm_id.name or ''
+        LossRiskResponsibilityCode = ''
+        LossRisk = ''
         if self.invoice_id.invoice_type_code == '02':
             if not self.invoice_id.invoice_incoterm_id:
                 raise UserError(msg7)
@@ -487,18 +483,6 @@ class AccountInvoiceDianDocument(models.Model):
         #El valor a pagar puede verse afectado, por anticipos, y descuentos y
         #cargos a nivel de factura
         PayableAmount = TaxInclusiveAmount
-        currency_id = self.invoice_id.currency_id
-        total_letras = self.invoice_id.currency_id.amount_to_text(PayableAmount)
-        if currency_id.name == 'COP' and 'Peso' in total_letras and str(int(PayableAmount))[-1] != '1':
-            total_letras = total_letras.replace('Peso', 'Pesos')
-        if currency_id.name == 'USD' and 'Dollars' in total_letras:
-            total_letras = total_letras.replace('Dollars', 'Dolares')
-        if currency_id.name == 'USD' and 'Dollar' in total_letras:
-            total_letras = total_letras.replace('Dollar', 'Dolar')
-        if  currency_id.name in ('USD','EUR') and 'Cents' in total_letras:
-            total_letras = total_letras.replace('Cents', 'Centavos')
-        elif currency_id.name in ('USD','EUR') and 'Cent' in total_letras:
-            total_letras = total_letras.replace('Cent', 'Centavo')
         # cufe_cude = global_functions.get_cufe_cude(
         #     ID,
         #     IssueDate,
@@ -539,14 +523,13 @@ class AccountInvoiceDianDocument(models.Model):
             'nroCbte': self._get_nroCbte()['nroCbte'],
             'puntoDeVentaId': active_dian_resolution['puntoDeVentaId'],
             'DocOrigin': self.invoice_id.invoice_origin or '',
-            'Note1': self.company_id.tributary_information or '', #self.invoice_id.ref1_comfiar or '',
-            'Note2': self.company_id.tributary_information2 or '', #'{:.2f}'.format(self.invoice_id.amount_untaxed),
-            'Note3': 'Nota 3 ???', #'{:.2f}'.format(self.invoice_id.amount_total),
-            'Note4': total_letras.upper() if self.type_account == '01' else self.invoice_id.narration or '',
-            'Note5': self.invoice_id.narration if self.type_account == '01' else total_letras.upper() or '', #'{:.2f}'.format(RteFte),
-            'Note6': self.invoice_id.invoice_payment_term_id.name or '', #'{:.2f}'.format(RteIVA),
-            'Note7': self.invoice_id.invoice_date_due, #'{:.2f}'.format(RteICA),
-            'Note8': '{:.2f}'.format(RteIVA) + '|' + '{:.2f}'.format(RteFte) + '|' + '{:.2f}'.format(RteICA),
+            'Note1': self.invoice_id.ref1_comfiar or '',
+            'Note2': '{:.2f}'.format(self.invoice_id.amount_untaxed),
+            'Note3': '{:.2f}'.format(self.invoice_id.amount_total),
+            'Note4': self.invoice_id.narration or '',
+            'Note5': '{:.2f}'.format(RteFte),
+            'Note6': '{:.2f}'.format(RteIVA),
+            'Note7': '{:.2f}'.format(RteICA),
             'InvoiceAuthorization': active_dian_resolution['resolution_number'],
             'StartDate': active_dian_resolution['date_from'],
             'EndDate': active_dian_resolution['date_to'],
@@ -565,7 +548,7 @@ class AccountInvoiceDianDocument(models.Model):
             # 'UUID': cufe_cude['CUFE/CUDE'],
             'IssueDate': IssueDate,
             'IssueTime': IssueTime,
-            'LineCountNumeric': len(self.invoice_id.invoice_line_ids.filtered(lambda x: x.display_type not in ('line_section', 'line_note'))),
+            'LineCountNumeric': len(self.invoice_id.invoice_line_ids),
             'DocumentCurrencyCode': self.invoice_id.currency_id.name,
             'ActualDeliveryDate': ActualDeliveryDate,
             'Delivery': customer._get_delivery_values(),
@@ -586,13 +569,7 @@ class AccountInvoiceDianDocument(models.Model):
             'LineExtensionAmount': '{:.2f}'.format(self.invoice_id.amount_untaxed),
             'TaxExclusiveAmount': '{:.2f}'.format(self.invoice_id.amount_untaxed),
             'TaxInclusiveAmount': '{:.2f}'.format(TaxInclusiveAmount),#ValTot
-            'PayableAmount': '{:.2f}'.format(PayableAmount),
-
-            'UTs': self.company_id._get_members_uts_info(),
-            'RolReceptorId': customer.rol_pa or '',
-            'Receptores': customer._get_receptor_comfiar(),
-            'ContractDocumentReference': self.invoice_id.number_contract or '',
-            'ContractDate': self.invoice_id.date_contract or ''}
+            'PayableAmount': '{:.2f}'.format(PayableAmount)}
 
 
     def _get_invoice_values(self):
@@ -842,7 +819,7 @@ class AccountInvoiceDianDocument(models.Model):
         _logger.info('credit')
         _logger.info(self.invoice_id.refund_type)
 
-        if self.invoice_id.type == "out_invoice" and not self.invoice_id.refund_type:
+        if self.invoice_id.type == "out_invoice":
             if self.company_id.comfiar_send_mail:
                 _logger.info('*** Mail Comfiar -- pre_template_xml')
                 xml_without_signature = global_functions.get_template_xml(
@@ -864,7 +841,7 @@ class AccountInvoiceDianDocument(models.Model):
                 xml_without_signature = global_functions.get_template_xml(
                     self._get_credit_note_values(),
                     'CreditNote')
-        elif self.invoice_id.type == "out_invoice" and self.invoice_id.refund_type == "debit":
+        elif self.invoice_id.type == "out_refund" and self.invoice_id.refund_type == "debit":
             if self.company_id.comfiar_send_mail:
                 xml_without_signature = global_functions.get_template_xml(
                     self._get_debit_note_values(),
@@ -1412,10 +1389,7 @@ class AccountInvoiceDianDocument(models.Model):
                         for item in root.iter('{%s}UUID' % cbc):
                             cufe_cude.append(item.text)
                         if len(cufe_cude) == 1:
-                            if self.invoice_id.operation_type not in ('22','32'):
-                                self.cufe_cude = cufe_cude[0]
-                            else:
-                                self.cude = cufe_cude[0]
+                            self.cufe_cude = cufe_cude[0]
                         elif len(cufe_cude) == 2:
                             self.cude = cufe_cude[0]
                             self.cufe_cude = cufe_cude[1]
@@ -1441,8 +1415,6 @@ class AccountInvoiceDianDocument(models.Model):
                         self.output_dian_response += item.text + '\n\n'
                     for item in root.iter('string'):
                         self.output_dian_response += item.text + '\n\n'
-                    for item in root.iter('ResponseDateTime'):
-                        self.date_validation_dian = item.text
 
                     if out_dian_code == '00':
                         self.write({'state': 'done'})
@@ -1898,24 +1870,19 @@ class AccountInvoiceDianDocument(models.Model):
         except exceptions.RequestException as e:
             raise ValidationError(msg2 % (e))
     
-    def _get_zipped_files(self, files_b64):
+    def _get_zipped_files(self, file_b64, filename):
         output = BytesIO()
         zipfile = ZipFile(output, mode='w')
         zipfile_content = BytesIO()
-        for filename, file_b64 in files_b64:
-            zipfile_content.write(b64decode(file_b64))
-            zipfile.writestr(filename, zipfile_content.getvalue())
-        zip_size = sum([x.compress_size for x in zipfile.infolist()])
+        zipfile_content.write(b64decode(file_b64))
+        zipfile.writestr(filename, zipfile_content.getvalue())
         zipfile.close()
-        return [output.getvalue(), zip_size]
+        return output.getvalue()
     
     def validate_status_document_dian(self):
         self.ensure_one()
         self.SalidaTransaccion()
         if self.output_comfiar_status_code in ('ACEPTADO', 'AUTORIZADO'):
-            # if not self.attached_docs:
-            #     self.AdjuntarArchivoBytes()
-            #     self.attached_docs = True
             self.DescargarXml2()
             if not self.pdf_file:
                 if self.attach_pdf:
@@ -1927,7 +1894,7 @@ class AccountInvoiceDianDocument(models.Model):
 
             if self.pdf_file and self.xml_file and self.company_id.odoo_send_mail_einv and not self.mail_sent:
                 self.action_send_mail()
-            elif self.pdf_file and self.output_comfiar_status_code == 'AUTORIZADO' and not self.company_id.odoo_send_mail_einv:
+            elif self.output_comfiar_status_code == 'AUTORIZADO' and not self.company_id.odoo_send_mail_einv:
                 self.mail_sent = True
     
     def get_status_by_document_number(self):
@@ -1959,104 +1926,6 @@ class AccountInvoiceDianDocument(models.Model):
                 record.RespuestaComprobante()
             except Exception as e:
                 record.attach_pdf_response = 'Error occurred : ' + str(e)
-    
-    def get_date_validation_dian(self):
-        for record in self:
-            xml_resp = record.transaction_output_invoice
-            xml_tree = etree.fromstring(xml_resp.encode('utf-8'))
-            for element in xml_tree.iter('RespuestaDIAN'):
-                root = etree.fromstring(element.text.encode('utf-16'))
-                for item in root.iter('ResponseDateTime'):
-                    record.date_validation_dian = item.text
-    
-    def AdjuntarArchivoBytes(self):
-        msg1 = _("Unknown Error,\nStatus Code: %s,\nReason: %s,\n\nContact with your administrator "
-                "or you can choose a journal with a Contingency Checkbook E-Invoicing sequence "
-                "and change the Invoice Type to 'Factura por Contingencia Facturador'.")
-        msg2 = _("Unknown Error: %s\n\nContact with your administrator "
-                "or you can choose a journal with a Contingency Checkbook E-Invoicing sequence "
-                "and change the Invoice Type to 'Factura por Contingencia Facturador'.")
-        wsdl = ''
-
-        attach_obj = self.env['ir.attachment']
-
-        if self.company_id.profile_execution_id == '1':
-            wsdl = COMFIAR['prod']
-        else:
-            wsdl = COMFIAR['test']
-
-        # Archivos a Adjuntar
-        files_b64 = []
-        attach_ids = attach_obj.search([('res_model','=','account.move'),('res_id','=',self.invoice_id.id)])
-        for attach_id in attach_ids:
-            files_b64.append([attach_id.name, attach_id.datas])
-        if files_b64:
-            archivo = self._get_zipped_files(files_b64)
-        else:
-            return
-        # sesion
-        if not self.company_id.sesion_id or not self.company_id.date_due_sesion:
-            self.get_sesion_comfiar()
-        # num Comprobante
-        if not self.nroCbte:
-            doc = self._get_nroCbte()
-            self.prefix = doc['prefix']
-            self.nroCbte = doc['nroCbte']
-        
-        # get transaction autorizar comprobante
-        transaction = etree.fromstring(self.transaction_response.encode('utf-8'))
-        for element in transaction.iter('ID'):
-            trans_id = element.text
-
-        values = {
-            'archivo': b64encode(archivo[0]), # .decode('utf-8','ignore')
-            'nombreArchivo': 'Adjuntos.zip',
-            'descripcion': 'Documentos Adjuntos',
-            'tamaño': str(archivo[1]),
-            'transaccionId': trans_id,
-            'cuitId': self.company_id.partner_id.identification_document,
-            'puntoDeVentaId': self._get_puntoDeVentaId(),
-            'tipoComprobanteId': self.type_account,
-            'numeroComprobante': self.nroCbte,
-            'SesionId': self.company_id.sesion_id,
-            'FechaVencimiento': self.company_id.date_due_sesion,
-        }
-        try:
-            sesion = 'inactive'
-            while sesion == 'inactive':
-                xml = global_functions.get_template_xml(values, '8_AdjuntarArchivoBytes')
-                parser = etree.XMLParser(remove_blank_text=True)
-                root = etree.fromstring(xml.encode("utf-8"), parser=parser)
-                file = open('Prueba_XML.xml', 'wb')
-                file.write(xml.encode('utf-8'))
-
-                response = post(
-                    wsdl,
-                    headers={'content-type': 'application/soap+xml;charset=utf-8'},
-                    data=etree.tostring(root, encoding="unicode"))
-
-                _logger.info('************ Adjuntar Archivo Bytes')
-                if response.status_code == 200:
-                    root = etree.fromstring(response.text.encode('utf-8'))
-                    sesion = 'active'
-                    # root = etree.tostring(root, pretty_print=True)
-                    # self.attach_pdf_response = root
-                    _logger.info('************ Adjuntar Archivo Bytes - Entró')
-                elif response.status_code in (500, 503, 507):
-                    root = etree.fromstring(response.text.encode('utf-8'))
-                    code = root.find('{s}Body/{s}Fault/{s}Code/{s}Value'.format(s = xmlns['s'], x = xmlns['x'])).text
-                    reason = root.find('{s}Body/{s}Fault/{s}Reason/{s}Text'.format(s = xmlns['s'], x = xmlns['x'])).text
-                    if 'El token ingresado esta vencido' in reason:
-                        self.get_sesion_comfiar()
-                        values.update(SesionId=self.company_id.sesion_id, FechaVencimiento=self.company_id.date_due_sesion)
-                    else:
-                        sesion = 'active'
-                        raise ValidationError('Código Error: %s\n\n Razón: %s' % (code, reason))
-                else:
-                    sesion = 'active'
-                    raise ValidationError(msg1 % (response.status_code, response.reason))
-        except exceptions.RequestException as e:
-            raise ValidationError(msg2 % (e))
                 
 
 class AccountInvoiceDianDocumentLine(models.Model):

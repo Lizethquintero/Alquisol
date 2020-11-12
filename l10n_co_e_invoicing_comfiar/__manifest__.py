@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
-    "name": "Colombian E-Invoicing with COMFIAR Thomas",
+    "name": "Colombian E-Invoicing with COMFIAR",
     "category": "Financial",
     "version": "10.0.1.0.0",
     "author": "Bernardo D. Lara Guevara bl@todoo.co",
@@ -20,7 +20,6 @@
         ],
     },
     "data": [
-        'security/account_invoice_dian_document_groups.xml',
         'security/account_invoice_dian_document_security.xml',
         'security/ir.model.access.csv',
         "data/product_scheme_data.xml",

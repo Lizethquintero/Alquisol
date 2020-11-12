@@ -70,7 +70,6 @@ class ResCompany(models.Model):
         string='Notification Group')
     get_numbering_range_response = fields.Text(string='GetNumberingRange Response')
     tributary_information = fields.Text(string='Información Tributaria')
-    tributary_information2 = fields.Text(string='Información Tributaria 2')
     attach_pdf = fields.Boolean(string="Adjuntar Pdf", default=False, help='habilita la opción de adjuntar el reporte de factura pdf generado desde Odoo en el comprobante publicado en la plataforma de Comfiar')
 
     @api.onchange('signature_policy_url')
@@ -175,26 +174,3 @@ class ResCompany(models.Model):
                 raise ValidationError(msg1 % (response.status_code, response.reason))
         except exceptions.RequestException as e:
             raise ValidationError(msg2 % (e))
-    
-    def _get_members_uts_info(self):
-        self.ensure_one()
-        if not self.members_ids:
-            return False
-        values = {}
-        n_member = 1
-        for member_id in self.members_ids:
-            value = {}
-            partner_id = member_id.partner_id
-            id = 'SOCIEDAD_' + str(n_member)
-            value[id] = partner_id.sudo()._get_accounting_partner_party_values()
-            description = partner_id.name \
-                        + '*NIT: ' + partner_id.identification_document + '-' \
-                        + partner_id.check_digit + '*' \
-                        + (member_id.note1 or '') + '*' \
-                        + (member_id.note2 or '') + '*' \
-                        + (member_id.note3 or '')
-            value[id]['Description'] = description
-            value[id]['Percent'] = member_id.percent_part
-            values = dict(values, **value)
-            n_member += 1
-        return values

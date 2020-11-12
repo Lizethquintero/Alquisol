@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-09 20:30+0000\n"
-"PO-Revision-Date: 2020-11-09 20:30+0000\n"
+"POT-Creation-Date: 2020-09-22 17:37+0000\n"
+"PO-Revision-Date: 2020-09-22 17:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -65,6 +65,12 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
 #, python-format
+msgid "'%s' does not have a fiscal position correctly configured."
+msgstr ""
+
+#. module: l10n_co_e_invoicing_comfiar
+#: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
+#, python-format
 msgid "'%s' does not have a fiscal position established."
 msgstr ""
 
@@ -91,12 +97,6 @@ msgstr ""
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
 #, python-format
 msgid "'%s' does not have a verification digit established."
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
-#, python-format
-msgid "'%s' does not have the tax responsibilities configured correctly."
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -179,11 +179,6 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_document
 msgid "<strong>Cliente:</strong>"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_layout
-msgid "<strong>Date of validation:</strong>"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -310,6 +305,7 @@ msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_company_form
 msgid "COMFIAR"
 msgstr ""
 
@@ -488,11 +484,6 @@ msgid "DIAN Type"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_invoice_dian_document__date_validation_dian
-msgid "Date of validation DIAN"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields.selection,name:l10n_co_e_invoicing_comfiar.selection__account_invoice_dian_document__type_account__05
 msgid "Debit Note"
 msgstr ""
@@ -554,6 +545,7 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: code:addons/l10n_co_e_invoicing_comfiar/models/ir_sequence.py:0
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_company_form
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_invoice_form
 #, python-format
 msgid "E-Invoicing"
@@ -706,11 +698,6 @@ msgid "Get Session"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
-msgid "Get validation date DIAN"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__get_numbering_range_response
 msgid "GetNumberingRange Response"
 msgstr ""
@@ -771,11 +758,6 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__tributary_information
 msgid "Información Tributaria"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__tributary_information2
-msgid "Información Tributaria 2"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -885,11 +867,6 @@ msgid "Need attachments in e-invoicing mail"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_invoice_form
-msgid "Note"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__notification_group_ids
 msgid "Notification Group"
 msgstr ""
@@ -926,7 +903,7 @@ msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_layout
-msgid "Page: <span class=\"page\"/> de <span class=\"topage\"/>"
+msgid "Page: <span class=\"page\"/> / <span class=\"topage\"/>"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -983,16 +960,6 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields.selection,name:l10n_co_e_invoicing_comfiar.selection__res_company__profile_execution_id__1
 msgid "Production"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
-msgid "Publicar"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
-msgid "Publicar Adjuntos"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -1082,12 +1049,6 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_invoice_dian_document__attach_pdf_response
 msgid "Respuesta Adjuntar Pdf"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_partner__rol_pa
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_users__rol_pa
-msgid "Rol patrimonio autónomo"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -1275,13 +1236,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_layout
-msgid ""
-"This receipt has been issued by COMFIAR, the electronic invoicing software "
-"of APG Consulting Colombia SAS NIT: 901037591-1 www.comfiar.co"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_tree
 msgid "Tipo"
 msgstr ""
@@ -1341,7 +1295,6 @@ msgstr ""
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
-#: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_company.py:0
 #, python-format
 msgid ""
@@ -1371,7 +1324,6 @@ msgstr ""
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
-#: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_company.py:0
 #, python-format
 msgid ""
@@ -1391,11 +1343,6 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
 msgid "Update nroCbte"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_invoice_dian_document__attached_docs
-msgid "Uploaded attachments"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -1550,13 +1497,8 @@ msgid "account.invoice.dian.document.line"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_company_form
-msgid "e-Invoicing COMFIAR"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_partner_form
-msgid "e-invoicing"
+#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_partner_property_form_chech_mail_einv
+msgid "e-Invoicing"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar

@@ -11,34 +11,22 @@
                 <field name="send_invoice_to_dian" invisible="1"/>
                     <!-- attrs="{'invisible': [('type', 'not in', ('out_invoice','out_refund'))],'!required': [('type', '!=', 'out_invoice')]}"/> -->
                 <field name="operation_type" string="Tipo Operacion"
-                    attrs="{'invisible': [('type', 'not in', ('out_invoice','out_refund'))],
-                            '!required': [('type', '!=', 'out_invoice')],
-                            'readonly': [('state', '!=', 'draft')]}"
+                    attrs="{'invisible': [('type', 'not in', ('out_invoice','out_refund'))],'!required': [('type', '!=', 'out_invoice')]}"
                     />
                 <field name="invoice_type_code"
-                    attrs="{'invisible': [('type', 'not in', ('out_invoice','out_refund'))],
-                            '!required': [('type', '!=', 'out_invoice')],
-                            'readonly': [('state', '!=', 'draft')]}"
+                    attrs="{'invisible': [('type', 'not in', ('out_invoice','out_refund'))],'!required': [('type', '!=', 'out_invoice')]}"
                     />
                 <field name="is_invoice_out_odoo"
-                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('operation_type', 'not in', ('20','30'))],
-                            '!required': [('type', '!=', 'out_invoice')],
-                            'readonly': [('state', '!=', 'draft')]}"
+                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('operation_type', 'not in', ('20','30'))],'!required': [('type', '!=', 'out_invoice')]}"
                     />
                 <field name="id_invoice_refound"
-                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('is_invoice_out_odoo', '==', False)],
-                            '!required': [('type', '!=', 'out_invoice')],
-                            'readonly': [('state', '!=', 'draft')]}"
+                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('is_invoice_out_odoo', '==', False)],'!required': [('type', '!=', 'out_invoice')]}"
                     />
                 <field name="uuid_invoice"
-                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('is_invoice_out_odoo', '==', False)],
-                            '!required': [('type', '!=', 'out_invoice')],
-                            'readonly': [('state', '!=', 'draft')]}"
+                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('is_invoice_out_odoo', '==', False)],'!required': [('type', '!=', 'out_invoice')]}"
                     />
                 <field name="issue_date_invoice"
-                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('is_invoice_out_odoo', '==', False)],
-                            '!required': [('type', '!=', 'out_invoice')],
-                            'readonly': [('state', '!=', 'draft')]}"
+                    attrs="{'invisible': ['|',('type', 'not in', ('out_invoice','out_refund')),('is_invoice_out_odoo', '==', False)],'!required': [('type', '!=', 'out_invoice')]}"
                     />
                 <field name="customizationid_invoice" invisible="1"
                     />
@@ -58,7 +46,7 @@
                 </page>
             </xpath>
             <xpath expr="//notebook/page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
-                <field name="ref_comfiar" string="Note" optional='show'/>
+                <field name="ref_comfiar" optional='show'/>
             </xpath>
             <xpath expr="//notebook/page[@id='aml_tab']/field[@name='line_ids']/tree/field[@name='account_internal_type']" position="after">
                 <field name="ref_comfiar" invisible="1"/>

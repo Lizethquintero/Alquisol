@@ -11,9 +11,8 @@ class ResPartner(models.Model):
 	_inherit = "res.partner"
 
 	check_mail_einv = fields.Boolean(string='Need attachments in e-invoicing mail', default=False,
-		help='This check allows to disable the automatic sending of the electronic invoice email at the moment of validating the status of the DIAN document')
-	rol_pa = fields.Char(string='Rol patrimonio autónomo')
-	
+		help='This check allows to disable the automatic sending of the electronic invoice email at the moment of validating the status of the DIAN document')	
+
 	def _get_accounting_partner_party_values(self):
 		msg1 = _("'%s' does not have a person type established.")
 		msg2 = _("'%s' does not have a city established.")
@@ -22,7 +21,7 @@ class ResPartner(models.Model):
 		msg5 = _("'%s' does not have a verification digit established.")
 		msg6 = _("'%s' does not have a DIAN document type established.")
 		msg7 = _("'%s' does not have a identification document established.")
-		msg8 = _("'%s' does not have the tax responsibilities configured correctly.")
+		msg8 = _("'%s' does not have a fiscal position correctly configured.")
 		msg9 = _("'%s' does not have a fiscal position established.")
 		msg10 = _("E-Invoicing Agent: '%s' does not have a E-Invoicing Email.")
 		msg11 = _("The partner '%s' does not have a Email.")
@@ -69,20 +68,20 @@ class ResPartner(models.Model):
 		if not self.email:
 			raise UserError(msg11 % self.name)
 
-		# if self.property_account_position_id:
-		if (not self.tax_level_code_id
-				or not self.tax_scheme_id
-				or not self.listname):
-			raise UserError(msg8 % self.name)
+		if self.property_account_position_id:
+			if (not self.property_account_position_id.tax_level_code_id
+					or not self.property_account_position_id.tax_scheme_id
+					or not self.property_account_position_id.listname):
+				raise UserError(msg8 % self.name)
 
-		tax_level_codes = ''
+			tax_level_codes = ''
 			# tax_scheme_code = self.property_account_position_id.tax_scheme_id.code
 			# tax_scheme_name = self.property_account_position_id.tax_scheme_id.name
-		# else:
-		# 	raise UserError(msg9 % self.name)
+		else:
+			raise UserError(msg9 % self.name)
 
 
-		for tax_level_code_id in self.tax_level_code_id:
+		for tax_level_code_id in self.property_account_position_id.tax_level_code_id:
 			if tax_level_codes == '':
 				tax_level_codes = tax_level_code_id.code
 			else:
@@ -122,11 +121,10 @@ class ResPartner(models.Model):
 			'CompanyIDschemeID': self.check_digit,
 			'CompanyIDschemeName': self.document_type_id.code,
 			'CompanyID': self.identification_document,
-			'listName': self.listname,
-			'TaxLevelCode': tax_level_codes,
-			# self.property_account_position_id.tax_level_code_id.code,
-			'TaxSchemeID': self.tax_scheme_id.code,
-			'TaxSchemeName': self.tax_scheme_id.name,
+			'listName': self.property_account_position_id.listname,
+			'TaxLevelCode': self.property_account_position_id.tax_level_code_id.code,
+			'TaxSchemeID': self.property_account_position_id.tax_scheme_id.code,
+			'TaxSchemeName': self.property_account_position_id.tax_scheme_id.name,
 			'CorporateRegistrationSchemeName': self.ref,
 			'CountryIdentificationCode': self.country_id.code,
 			'CountryName': self.country_id.name,
@@ -135,9 +133,7 @@ class ResPartner(models.Model):
 			'MiddleName': middle_name,
 			'Telephone': telephone,
 			'Telefax': '',
-			'ElectronicMail': self.email,
-
-			'CustomerAssignedAccountID': self.ref or '',
+			'ElectronicMail': self.email
 		}
 
 
@@ -171,20 +167,3 @@ class ResPartner(models.Model):
 			'AddressLine': self.street or '',
 			'CountryIdentificationCode': self.country_id.code,
 			'CountryName': self.country_id.name}
-	
-	def _get_receptor_comfiar(self):
-		self.ensure_one()
-
-		if self.phone and self.mobile:
-			telephone = self.phone + " / " + self.mobile
-		elif self.lastname:
-			telephone = self.phone
-		elif self.lastname2:
-			telephone = self.mobile
-		receptor = {}
-		for email in self.email.split(','):
-			receptor = dict(receptor, **{email.replace(' ', ''): {'Name': self.name,
-												 'Telephone': telephone,
-												#  'Rol': self.rol_pa,
-												 }})
-		return receptor

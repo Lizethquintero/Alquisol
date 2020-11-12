@@ -54,7 +54,7 @@ class AccountInvoice(models.Model):
 	customizationid_invoice = fields.Integer(default=10)
 	ref1_comfiar = fields.Char(string='Referencia 1 Comfiar')
 	invoice_origin = fields.Char(readonly=False)
-	issue_time = fields.Char('Hora Emisión', copy=False)
+	issue_time = fields.Char('Hora Emisión')
 	
 
 	def post(self):
@@ -82,7 +82,7 @@ class AccountInvoice(models.Model):
 						_logger.info(rate)
 						record.trm = rate
 
-					if record.type == 'out_invoice' and record.refund_type == 'debit':
+					if record.type == 'out_refund' and record.refund_type == 'debit':
 						type_account = '05'	# ND
 					elif record.type == 'out_refund' and record.refund_type != 'debit':
 						type_account = '04' # NC
@@ -105,10 +105,9 @@ class AccountInvoice(models.Model):
 					_logger.info(record.send_invoice_to_dian)
 					_logger.info(record.invoice_type_code )
 					if record.send_invoice_to_dian == '0' and len(self) == 1:
-						if record.invoice_type_code in ('01', '02', '03'):
+						if record.invoice_type_code in ('01', '02'):
 							dian_document.get_sesion_comfiar()
 							try:
-								# fff = 20/0
 								dian_document.AutorizarComprobanteAsincrono()
 								resp = False
 								count = 0
@@ -709,24 +708,13 @@ class AccountInvoice(models.Model):
 
 		invoice_lines = {}
 		count = 1
-		line_section = ''
-		section = False
-		section_val = ''
-		subtotal_sect = 0.0
-		iva_sect = 0.0
-		for invoice_line in self.invoice_line_ids.sorted(lambda x: x.sequence):
+
+		for invoice_line in self.invoice_line_ids:
 			_logger.info('prueba')
 			_logger.info(invoice_line)
 			_logger.info(invoice_line.product_uom_id)
 			_logger.info(invoice_line.product_id.default_code)
 			_logger.info(invoice_line.product_id)
-			
-			if invoice_line.display_type == 'line_section':
-				section = True
-				line_section = 'INGRESOS PARA ' + invoice_line.name.upper()
-				section_val = 'NO'
-				continue
-
 			if not invoice_line.product_uom_id.product_uom_code_id:
 				raise UserError(msg1 % invoice_line.product_uom_id.name)
 
@@ -762,8 +750,7 @@ class AccountInvoice(models.Model):
 				model_name = ''
 
 			invoice_lines[count] = {}
-			# invoice_lines[count]['DocOrigin'] = invoice_line.ref_comfiar
-			invoice_lines[count]['Note'] = invoice_line.ref_comfiar or ''
+			invoice_lines[count]['DocOrigin'] = invoice_line.ref_comfiar
 			invoice_lines[count]['unitCode'] = invoice_line.product_uom_id.product_uom_code_id.code
 			invoice_lines[count]['Quantity'] = '{:.2f}'.format(invoice_line.quantity)
 			invoice_lines[count]['PriceAmount'] = '{:.2f}'.format(reference_price)
@@ -776,7 +763,7 @@ class AccountInvoice(models.Model):
 			invoice_lines[count]['SellersItemIdentification'] = invoice_line.product_id.default_code
 			invoice_lines[count]['StandardItemIdentification'] = invoice_line.product_id.default_code
 
-			for tax in invoice_line.tax_ids: # tax_line_id
+			for tax in invoice_line.tax_line_id:
 
 				if tax.amount_type == 'group':
 					tax_ids = tax.children_tax_ids
@@ -796,11 +783,11 @@ class AccountInvoice(models.Model):
 							_logger.info('negativo tax')
 							raise UserError(msg6 % tax_id.name)
 
-						if tax_type == 'withholding_tax': #  and tax_id.amount > 0
+						if tax_type == 'withholding_tax' and tax_id.amount > 0:
 							invoice_lines[count]['WithholdingTaxesTotal'] = (
 								invoice_line._get_invoice_lines_taxes(
 									tax_id,
-									abs(tax_id.amount),
+									tax_id.amount,
 									invoice_lines[count]['WithholdingTaxesTotal']))
 						if tax_type == 'withholding_tax' and tax_id.amount < 0:
 							# TODO 3.0 Las retenciones se recomienda no enviarlas a la DIAN.
@@ -841,39 +828,16 @@ class AccountInvoice(models.Model):
 				invoice_lines[count]['TaxesTotal']['04']['taxes']['0.00']['base'] = invoice_line.price_subtotal
 				invoice_lines[count]['TaxesTotal']['04']['taxes']['0.00']['amount'] = 0
 
-			subtotal_sect += invoice_line.price_subtotal
-			iva_sect += invoice_lines[count]['TaxesTotal']['01']['total']
-			for line_follow in self.invoice_line_ids.filtered(lambda x: x.sequence == invoice_line.sequence+1 and x.display_type == 'line_section'):
-				section_val = 'SI'
-				invoice_lines[count]['Note'] = '{:.2f}'.format(subtotal_sect) \
-											+ '|' \
-											+ '{:.2f}'.format(iva_sect) \
-											+ '|' \
-											+ '{:.2f}'.format(subtotal_sect + iva_sect)
-				subtotal_sect = 0.0
-				iva_sect = 0.0
-			if section and invoice_line.id == self.invoice_line_ids.sorted(lambda x: x.sequence)[-1].id:
-				section_val = 'SI'
-				invoice_lines[count]['Note'] = '{:.2f}'.format(subtotal_sect) \
-											+ '|' \
-											+ '{:.2f}'.format(iva_sect) \
-											+ '|' \
-											+ '{:.2f}'.format(subtotal_sect + iva_sect)
-				subtotal_sect = 0.0
-				iva_sect = 0.0
 
-			invoice_lines[count]['IncomeFor'] = line_section
-			invoice_lines[count]['IncomeValue'] = section_val
 			invoice_lines[count]['BrandName'] = brand_name
 			invoice_lines[count]['ModelName'] = model_name
-			invoice_lines[count]['ItemDescription'] = str(invoice_line.name) if invoice_line.name != invoice_line.product_id.display_name else invoice_line.product_id.name or ''
+			invoice_lines[count]['ItemDescription'] = invoice_line.name,
 			invoice_lines[count]['InformationContentProviderParty'] = (
 				invoice_line._get_information_content_provider_party_values())
 			invoice_lines[count]['PriceAmount'] = '{:.2f}'.format(
 				invoice_line.price_unit)
 
 			count += 1
-			line_section = ''
 
 		return invoice_lines
 

@@ -82,6 +82,12 @@ msgstr "'%s' no tiene un país establecido"
 #. module: l10n_co_e_invoicing_comfiar
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
 #, python-format
+msgid "'%s' does not have a fiscal position correctly configured."
+msgstr "'%s' no tiene una posición fiscal configurada correctamente."
+
+#. module: l10n_co_e_invoicing_comfiar
+#: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
+#, python-format
 msgid "'%s' does not have a fiscal position established."
 msgstr "'%s' no tiene una posición fiscal establecida."
 
@@ -109,12 +115,6 @@ msgstr "'%s' no tiene establecido el departamento o estado"
 #, python-format
 msgid "'%s' does not have a verification digit established."
 msgstr "'%s' no tiene establecido el digito de verificacion"
-
-#. module: l10n_co_e_invoicing_comfiar
-#: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
-#, python-format
-msgid "'%s' does not have the tax responsibilities configured correctly."
-msgstr "'%s' no tiene las responsabilidades tributarias configuradas correctamente."
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.actions.report,print_report_name:l10n_co_e_invoicing_comfiar.account_e_invoices
@@ -199,11 +199,6 @@ msgstr "<strong>Ciudad:</strong>"
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_document
 msgid "<strong>Cliente:</strong>"
 msgstr "<strong>Cliente:</strong>"
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_layout
-msgid "<strong>Date of validation:</strong>"
-msgstr "<strong>Fecha de validación:</strong>"
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_document
@@ -514,11 +509,6 @@ msgid "DIAN Type"
 msgstr "Tipo DIAN"
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_invoice_dian_document__date_validation_dian
-msgid "Date of validation DIAN"
-msgstr "Fecha de validación DIAN"
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields.selection,name:l10n_co_e_invoicing_comfiar.selection__account_invoice_dian_document__type_account__05
 msgid "Debit Note"
 msgstr "Nota Débito"
@@ -579,7 +569,9 @@ msgstr "Factura Borrador"
 
 #. module: l10n_co_e_invoicing_comfiar
 #: code:addons/l10n_co_e_invoicing_comfiar/models/ir_sequence.py:0
+#: model:ir.model.fields.selection,name:l10n_co_e_invoicing_comfiar.selection__ir_sequence__dian_type__e-invoicing
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_company_form
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_invoice_form
 #, python-format
 msgid "E-Invoicing"
@@ -732,11 +724,6 @@ msgid "Get Session"
 msgstr "Obtener sesión"
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
-msgid "Get validation date DIAN"
-msgstr "Obtener fecha de validación DIAN"
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__get_numbering_range_response
 msgid "GetNumberingRange Response"
 msgstr ""
@@ -797,11 +784,6 @@ msgstr ""
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__tributary_information
 msgid "Información Tributaria"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__tributary_information2
-msgid "Información Tributaria 2"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -911,11 +893,6 @@ msgid "Need attachments in e-invoicing mail"
 msgstr "Requiere adjuntos en el correo de factura electrónica"
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_invoice_form
-msgid "Note"
-msgstr "Nota"
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__notification_group_ids
 msgid "Notification Group"
 msgstr "Grupo de notificación"
@@ -1012,16 +989,6 @@ msgid "Production"
 msgstr "Producción"
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
-msgid "Publicar"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_form
-msgid "Publicar Adjuntos"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_ir_sequence_date_range__puntoDeVentaId
 msgid "Punto de Venta"
 msgstr ""
@@ -1111,15 +1078,9 @@ msgid "Respuesta Adjuntar Pdf"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_partner__rol_pa
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_users__rol_pa
-msgid "Rol patrimonio autónomo"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_search
 msgid "Search Description"
-msgstr "Descripción de búsqueda"
+msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice.py:0
@@ -1155,7 +1116,7 @@ msgstr "Sesión"
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__signature_policy_description
 msgid "Signature Policy Description"
-msgstr "Descripción de la política de firma"
+msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__signature_policy_file
@@ -1285,9 +1246,6 @@ msgid ""
 "You won't be notified if something goes wrong.\n"
 "Please go to Settings > Company > Notification Group."
 msgstr ""
-"El grupo de notificación para fallas en la factura electrónica no está configurado. \n"
-"No se le notificará si algo sale mal. \n"
-"Vaya a Configuración>Compañía>Grupo de notificación."
 
 #. module: l10n_co_e_invoicing_comfiar
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_partner.py:0
@@ -1303,13 +1261,6 @@ msgid ""
 " email at the moment of validating the status of the DIAN document"
 msgstr ""
 "Esta verificación permite deshabilitar el envío automático del correo electrónico de la factura electrónica al momento de validar el estado del documento DIAN"
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_layout
-msgid ""
-"This receipt has been issued by COMFIAR, the electronic invoicing software "
-"of APG Consulting Colombia SAS NIT: 901037591-1 www.comfiar.co"
-msgstr "Este recibo ha sido emitido por COMFIAR, el software de facturación electrónica de APG Consulting Colombia SAS NIT: 901037591-1 www.comfiar.co"
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_dian_document_view_tree
@@ -1371,7 +1322,6 @@ msgstr "Tipo de documento"
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
-#: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_company.py:0
 #, python-format
 msgid ""
@@ -1409,7 +1359,6 @@ msgstr ""
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
-#: code:addons/l10n_co_e_invoicing_comfiar/models/account_invoice_dian_document.py:0
 #: code:addons/l10n_co_e_invoicing_comfiar/models/res_company.py:0
 #, python-format
 msgid ""
@@ -1437,11 +1386,6 @@ msgid "Update nroCbte"
 msgstr "Actualizar nroCbte"
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_invoice_dian_document__attached_docs
-msgid "Uploaded attachments"
-msgstr "Archivos adjuntos cargados"
-
-#. module: l10n_co_e_invoicing_comfiar
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_res_company__user_comfiar
 #: model:res.groups,name:l10n_co_e_invoicing_comfiar.group_invoice_dian_documen_user
 msgid "User"
@@ -1465,7 +1409,7 @@ msgstr "Factura de proveedor"
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.account_invoice_report_template_with_qr
 msgid "Vendor Refund"
-msgstr "Reembolso del proveedor"
+msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
 #: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.report_e_invoice_layout
@@ -1594,13 +1538,8 @@ msgid "account.invoice.dian.document.line"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_company_form
-msgid "e-Invoicing COMFIAR"
-msgstr ""
-
-#. module: l10n_co_e_invoicing_comfiar
-#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_partner_form
-msgid "e-invoicing"
+#: model_terms:ir.ui.view,arch_db:l10n_co_e_invoicing_comfiar.view_partner_property_form_chech_mail_einv
+msgid "e-Invoicing"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
@@ -1609,7 +1548,6 @@ msgid "einvoice.notification.group"
 msgstr ""
 
 #. module: l10n_co_e_invoicing_comfiar
-#: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_bank_statement_import_journal_creation__is_einvoicing
 #: model:ir.model.fields,field_description:l10n_co_e_invoicing_comfiar.field_account_journal__is_einvoicing
 msgid "electronic invoicing?"
 msgstr "¿Facturación electrónica?"
