@@ -146,11 +146,11 @@
 					<cbc:AdditionalAccountID>{{AccountingSupplierParty.AdditionalAccountID}}</cbc:AdditionalAccountID>
 					<cac:Party>
 						<cbc:IndustryClassificationCode>{{IndustryClassificationCode}}</cbc:IndustryClassificationCode>
-						<!-- {% if AccountingSupplierParty.PartyName %} -->
+						{% if AccountingSupplierParty.Name %}
 						<cac:PartyName>
-							<cbc:Name>{{AccountingSupplierParty.PartyName}}</cbc:Name>
+							<cbc:Name>{{AccountingSupplierParty.Name}}</cbc:Name>
 						</cac:PartyName>
-						<!-- {% endif %} -->
+						{% endif %}
 						<cac:PhysicalLocation>
 							<cac:Address>
 								<cbc:ID>{{AccountingSupplierParty.AddressID}}</cbc:ID>
@@ -260,11 +260,11 @@
 							<cbc:ID {% if AccountingCustomerParty.CompanyIDschemeName == '31' %}schemeID="{{AccountingCustomerParty.CompanyIDschemeID}}"{% endif %}
 								schemeName="{{AccountingCustomerParty.CompanyIDschemeName}}">{{AccountingCustomerParty.CompanyID}}</cbc:ID>
 						</cac:PartyIdentification>
-						<!-- {% if AccountingCustomerParty.PartyName%} -->
+						{% if AccountingCustomerParty.Name%}
 						<cac:PartyName>
-							<cbc:Name>{{AccountingCustomerParty.PartyName}}</cbc:Name>
+							<cbc:Name>{{AccountingCustomerParty.Name}}</cbc:Name>
 						</cac:PartyName>
-						<!-- {% endif %} -->
+						{% endif %}
 						{% if AccountingCustomerParty.CompanyID != '2222222222' %}
 						<cac:PhysicalLocation>
 							<cac:Address>
